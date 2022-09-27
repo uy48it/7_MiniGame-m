@@ -1,4 +1,5 @@
 'use strict'
+import PopUp from './popup.js'
 
 // 1. img 생성
 const gamestage = document.querySelector(".gamestage");
@@ -27,18 +28,18 @@ function drawImg(Cname, Sadress,num){
 
 //시작버튼이벤트
 const StartBtn = document.querySelector("#start__btn");
-const reStartBtn = document.querySelector("#restart__btn");
 const startmsg = document.querySelector(".start");
 const scoremsg = document.querySelector("#score");
 const timer = document.querySelector("#timer");
-const gamemsg = document.querySelector(".gamemsg");
+const PopupMessage = new PopUp();
 
 
 // Timer == 0 이면 게임 끝 
 // Score == 10 or Bug 만지면 Timer 멈추고 끝
+let score = 0;
+let timerF;
 
 function gamestart() {
-    let score = 0;
     scoremsg.innerHTML = score;
     //start 창 안보이게
     startmsg.classList.add('hide');
@@ -51,49 +52,51 @@ function gamestart() {
     let i = 10;
     timer.innerHTML = `0:${i}`;
     i--;
-    const timerFunc = setInterval(()=>{
+    timerF = setInterval(()=>{
         timer.innerHTML = `0:0${i}`;
         i--;    
         // 타임아웃시?
-        if (i < 0) { clearInterval(timerFunc); 
-            //동작 멈추는 함수
+        if (i < 0) { 
+            clearInterval(timerF); 
             gameoverFunc();
         }
     },1000);
     // 벌레 & 당근 클릭 수에 맞춰서 Score를 나타낼거야
     // 그리고 클릭하면 사라지게 할거야!
-    setScore(score, timerFunc);
-
-    
+    setScore(score);    
 }
 
+const carrot_audio = new Audio('sound/carrot_pull.mp3');
 
 // 점수 함수
-function setScore(score, func) {
+function setScore(score) {
     document.addEventListener('click',(e)=>{
         if(e.target.tagName == 'IMG'){
             if (e.target.className == 'bug') {
-                gameoverFunc();
-                clearInterval(func);
-            } else {
+                score = 0;
+                clearInterval(timerF);        
+                gameoverFunc();        
+            } else if (e.target.className == 'carrot') {
                 e.target.classList.add('hide');
+                carrot_audio.play();
                 score++;
                 scoremsg.innerHTML = score;
                 if(score == 10) {
-                    clearInterval(func);
+                    score = 0;
+                    clearInterval(timerF);
                     gameClear();
+                    return;
                 }
             }
         }
     });
 }
 
-const span = document.querySelector(".gamemsg > span");
 
 // GameOver() : 모든 동작을 멈추고 img를 다 삭제
 function gameoverFunc() {
-    span.innerHTML = "Game Over!";
-    gamemsg.classList.remove('hide');
+    PopupMessage.setText("Game Over!");
+    PopupMessage.hide_remove();
 
     const imgs = document.querySelectorAll("img");
     imgs.forEach(img=>{
@@ -103,8 +106,8 @@ function gameoverFunc() {
 
 // GameClear()
 function gameClear(){
-    span.innerHTML = "Game Clear!";
-    gamemsg.classList.remove('hide');
+    PopupMessage.setText("Game Clear!");
+    PopupMessage.hide_remove();
 }
 
 //일시정지
@@ -114,7 +117,6 @@ StartBtn.addEventListener('click', () => {
     gamestart();
 });
 
-reStartBtn.addEventListener('click', () => {
-    gamemsg.classList.add('hide');
+PopupMessage.setClickListener(() => {
     gamestart();
 });

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/1d84be454e.js" crossorigin="anonymous"></script>
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <div class="game">
+        <header class="state">
+            <div class="state_item" id="score"> Score </div>
+            <div class="state_item" id="timer"> Timer </div>
+            <button id="pause"><i class="fa-regular fa-circle-pause"></i></button>
+        </header>
+        <div class="gamestage">
+        </div>
+        <!-- 이거 합치고 반응형으로 바꾸기 -->
+        <div class="start">
+            START <br>
+            <button id="start__btn"><i class="fa-solid fa-play"></i></button> 
+        </div>
+        <div class="gamemsg hide">
+            <span>GameOver</span> <br> RePlay? <br>
+            <button id="restart__btn"><i class="fa-solid fa-reply"></i></button> 
+        </div>
+    </div>    
+</body>
+</html>
